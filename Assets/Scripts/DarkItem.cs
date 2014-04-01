@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Foregraound : MonoBehaviour
+public class DarkItem : MonoBehaviour
 {
-
     [SerializeField]
     private float speed = 2.0f;
 

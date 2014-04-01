@@ -49,6 +49,22 @@ public class Player : MonoBehaviour
     {
 
     }
+
+    void Up()
+    {
+        Vector3 scale = transform.localScale;
+        scale.y += 0.5f;
+        transform.localScale = scale;
+        Debug.Log(tag + " Up");
+    }
+
+    void Down()
+    {
+        Vector3 scale = transform.localScale;
+        scale.y -= 0.5f;
+        transform.localScale = scale;
+        Debug.Log(tag + " Down");
+    }
 }
 
 public enum PlayerType

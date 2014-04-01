@@ -34,14 +34,26 @@ public class Score : MonoBehaviour
         GUI.Label(rightArea, rightScore.ToString());
 	}
 
-    void LeftScoreUp()
+    void OnEnable()
     {
-        leftScore++;
+        Goal.OnLeftGoal += OnLeftGoal;
+        Goal.OnRightGoal += OnRightGoal;
     }
 
-    void RightScoreUp()
+    void OnDisable()
+    {
+        Goal.OnLeftGoal -= OnLeftGoal;
+        Goal.OnRightGoal -= OnRightGoal;
+    }
+
+    void OnLeftGoal()
     {
         rightScore++;
+    }
+
+    void OnRightGoal()
+    {
+        leftScore++;
     }
 
     /// <summary>

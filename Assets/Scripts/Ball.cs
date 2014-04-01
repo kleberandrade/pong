@@ -16,9 +16,13 @@ public class Ball : MonoBehaviour
 
     private TrailRenderer trail;
 
+    [SerializeField]
+    private bool ghostBall = false;
+
     void Start()
     {
         origin = transform.position;
+
         trail = GetComponent<TrailRenderer>();
         trail.time = trailTimer;
         trail.enabled = false;
@@ -40,21 +44,47 @@ public class Ball : MonoBehaviour
         trail.enabled = true;
     }
 
-    void LeftStartImpulse()
+    void Initialize()
+    {
+        if (Random.Range(-1.0f, 1.0f) < 0.0f)
+            StartImpulse(leftImpulse);
+        else
+            StartImpulse(rightImpulse);
+    }
+
+    void OnEnable()
+    {
+        Items.OnDarken += OnDarken;
+        Goal.OnLeftGoal += OnLeftGoal;
+        Goal.OnRightGoal += OnRightGoal;
+    }
+
+    void OnDisable()
+    {
+        Items.OnDarken -= OnDarken;
+        Goal.OnLeftGoal -= OnLeftGoal;
+        Goal.OnRightGoal -= OnRightGoal;
+    }
+
+    void OnDarken()
+    {
+        StartCoroutine("Darken");
+    }
+
+    IEnumerator Darken()
+    {
+        transform.GetChild(0).gameObject.SetActive(true);
+        yield return new WaitForSeconds(10.0f);
+        transform.GetChild(0).gameObject.SetActive(false);
+    }
+
+    void OnLeftGoal()
     {
         StartImpulse(leftImpulse);
     }
 
-	void RightStartImpulse()
-	{
-		StartImpulse(rightImpulse);
-	}
-
-    void Initialize()
+    void OnRightGoal()
     {
-        if (Random.Range(-1.0f, 1.0f) < 0.0f)
-            LeftStartImpulse();
-        else
-            RightStartImpulse();
+        StartImpulse(rightImpulse);
     }
 }
