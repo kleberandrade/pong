@@ -11,6 +11,7 @@ public class Items : MonoBehaviour
     public static ItemEvent OnPlayerDown;
     public static ItemEvent OnBlock;
     public static ItemEvent OnDoubleBall;
+    public static ItemEvent OnCurveBall;
     #endregion
 
     [SerializeField]
@@ -25,6 +26,9 @@ public class Items : MonoBehaviour
     private AudioClip audioCollectedItem;
 
     private ItemType type;
+    private float startTime;
+    [SerializeField]
+    private float activeTime = 10.0f;
 
     void OnEnable()
     {
@@ -35,6 +39,10 @@ public class Items : MonoBehaviour
         pos.x = Random.Range(-5.0f, 5.0f);
         pos.z = Random.Range(-4.0f, 4.0f);
         this.transform.position = pos;
+
+        startTime = Time.time;
+
+        Debug.Log("Drop: " + type.ToString());
     }
 	
 	void Update () 
@@ -45,6 +53,9 @@ public class Items : MonoBehaviour
             scale + Mathf.PingPong(Time.time * scaleSpeed, scaleMax));
 
         light.range = haloScale + Mathf.PingPong(Time.time * scaleSpeed, scaleMax);
+
+        if (Time.time - startTime > activeTime)
+            gameObject.SetActive(false);
 	}
 
     void OnTriggerEnter(Collider hit)
@@ -78,7 +89,13 @@ public class Items : MonoBehaviour
             if (OnDoubleBall != null)
                 OnDoubleBall();
         }
-
+/*
+        if (type == ItemType.Curve)
+        {
+            if (OnCurveBall != null)
+                OnCurveBall();
+        }
+*/
         if (audioCollectedItem)
             AudioSource.PlayClipAtPoint(audioCollectedItem, transform.position);
 

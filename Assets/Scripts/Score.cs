@@ -55,15 +55,9 @@ public class Score : MonoBehaviour
     {
         leftScore++;
     }
-
-    /// <summary>
-    /// Quit application - Test
-    /// </summary>
     void Update()
     {
-        if (leftScore + rightScore > 20)
-        {
+        if (leftScore == 11 || rightScore == 11)
             Application.Quit();
-        }
     }
 }

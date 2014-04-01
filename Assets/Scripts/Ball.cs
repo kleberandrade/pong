@@ -57,6 +57,7 @@ public class Ball : MonoBehaviour
         Items.OnDarken += OnDarken;
         Goal.OnLeftGoal += OnLeftGoal;
         Goal.OnRightGoal += OnRightGoal;
+        GameManager.OnGameStart += Initialize;
     }
 
     void OnDisable()
@@ -64,6 +65,7 @@ public class Ball : MonoBehaviour
         Items.OnDarken -= OnDarken;
         Goal.OnLeftGoal -= OnLeftGoal;
         Goal.OnRightGoal -= OnRightGoal;
+        GameManager.OnGameStart -= Initialize;
     }
 
     void OnDarken()

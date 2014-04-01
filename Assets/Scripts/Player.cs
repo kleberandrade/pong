@@ -6,10 +6,10 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     private float speed = 15.0f;
+    private float move;
     [SerializeField]
     private PlayerType type;
-
-    private float move;
+    private static PlayerType playerCollider = PlayerType.None;
 
 	void Update () 
     {
@@ -45,30 +45,45 @@ public class Player : MonoBehaviour
         rigidbody.velocity = Vector3.forward * move;
 	}
 
+    void OnCollisionEnter(Collision hit)
+    {
+        if (hit.collider.CompareTag("Ball"))
+        {
+            Player.playerCollider = type;
+        }
+    }
+
     void AIMovement()
     {
 
     }
 
-    void Up()
+    void OnPlayerUp()
     {
-        Vector3 scale = transform.localScale;
-        scale.y += 0.5f;
-        transform.localScale = scale;
-        Debug.Log(tag + " Up");
+        if (type == playerCollider)
+        {
+            Vector3 scale = transform.localScale;
+            scale.y += 1.0f;
+            transform.localScale = scale;
+            Debug.Log(tag + " Up");
+        }
     }
 
-    void Down()
+    void OnPlayerDown()
     {
-        Vector3 scale = transform.localScale;
-        scale.y -= 0.5f;
-        transform.localScale = scale;
-        Debug.Log(tag + " Down");
+        if (type == playerCollider)
+        {
+            Vector3 scale = transform.localScale;
+            scale.y -= 1.0f;
+            transform.localScale = scale;
+            Debug.Log(tag + " Down");
+        }
     }
 }
 
 public enum PlayerType
 {
+    None,
     Left,
     Right,
     AI
