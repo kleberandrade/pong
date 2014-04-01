@@ -41,8 +41,6 @@ public class Items : MonoBehaviour
         this.transform.position = pos;
 
         startTime = Time.time;
-
-        Debug.Log("Drop: " + type.ToString());
     }
 	
 	void Update () 
@@ -60,12 +58,13 @@ public class Items : MonoBehaviour
 
     void OnTriggerEnter(Collider hit)
     {
+/*
         if (type == ItemType.Block)
         {
             if (OnDoubleBall != null)
                 OnDoubleBall();
         }
-
+*/
         if (type == ItemType.Dark)
         {
             if (OnDarken != null)
@@ -83,13 +82,13 @@ public class Items : MonoBehaviour
             if (OnPlayerDown != null)
                 OnPlayerDown();
         }
-
+/*
         if (type == ItemType.Double)
         {
             if (OnDoubleBall != null)
                 OnDoubleBall();
         }
-/*
+
         if (type == ItemType.Curve)
         {
             if (OnCurveBall != null)
@@ -105,9 +104,9 @@ public class Items : MonoBehaviour
 
 public enum ItemType
 {
-    Block,
+   // Block,
     Dark,
     Up,
-    Down,
-    Double
+    Down
+   // Double
 }

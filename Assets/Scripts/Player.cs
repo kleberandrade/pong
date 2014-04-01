@@ -9,7 +9,13 @@ public class Player : MonoBehaviour
     private float move;
     [SerializeField]
     private PlayerType type;
-    private static PlayerType playerCollider = PlayerType.None;
+    protected static PlayerType playerCollider = PlayerType.None;
+    protected static Vector3 originScale;
+
+    void Start()
+    {
+        originScale = transform.localScale;
+    }
 
 	void Update () 
     {
@@ -58,25 +64,43 @@ public class Player : MonoBehaviour
 
     }
 
+    void OnEnable()
+    {
+        Items.OnPlayerUp += OnPlayerUp;
+        Items.OnPlayerDown += OnPlayerDown;
+    }
+
+    void OnDisable()
+    {
+        Items.OnPlayerUp -= OnPlayerUp;
+        Items.OnPlayerDown -= OnPlayerDown;
+    }
+
     void OnPlayerUp()
     {
-        if (type == playerCollider)
+        if (type == Player.playerCollider)
         {
             Vector3 scale = transform.localScale;
-            scale.y += 1.0f;
+            scale.y += 0.5f;
             transform.localScale = scale;
-            Debug.Log(tag + " Up");
+            StartCoroutine("BackEffect");
         }
+    }
+
+    IEnumerator BackEffect()
+    {
+        yield return new WaitForSeconds(10.0f);
+        transform.localScale = originScale;
     }
 
     void OnPlayerDown()
     {
-        if (type == playerCollider)
+        if (type == Player.playerCollider)
         {
             Vector3 scale = transform.localScale;
-            scale.y -= 1.0f;
+            scale.y -= 0.5f;
             transform.localScale = scale;
-            Debug.Log(tag + " Down");
+            StartCoroutine("BackEffect");
         }
     }
 }
