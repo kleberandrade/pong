@@ -13,34 +13,42 @@ public class Player : MonoBehaviour
 
 	void Update () 
     {
+#if UNITY_EDITOR || UNITY_WEBPLAYER || UNITY_STANDALONE
+
         // Left Player
 	    if (type == PlayerType.Left)
-        {
-#if UNITY_EDITOR || UNITY_WEBPLAYER || UNITY_STANDALONE
             move = Input.GetAxis("VerticalLeft") * speed;
-#elif UNITY_ANDROID
-
-#endif
-        }
 
         // Right Player
         if (type == PlayerType.Right)
-        {
-#if UNITY_EDITOR || UNITY_WEBPLAYER || UNITY_STANDALONE
             move = Input.GetAxis("VerticalRight") * speed;
+
 #elif UNITY_ANDROID
 
-#endif
+        foreach (var touch in Input.touches)
+        {
+            if (type == PlayerType.Left && touch.position.x < Screen.width / 2.0f)
+                move = touch.position.y - Camera.main.WorldToScreenPoint(transform.position).y;
+
+            if (type == PlayerType.Right && touch.position.x >= Screen.width / 2.0f) 
+                move = touch.position.y - Camera.main.WorldToScreenPoint(transform.position).y;
         }
+
+#endif
 
         // Artificial Intelligence Player
         if (type == PlayerType.AI)
         {
-
+            AIMovement();   
         }
 
         rigidbody.velocity = Vector3.forward * move;
 	}
+
+    void AIMovement()
+    {
+
+    }
 }
 
 public enum PlayerType

@@ -32,6 +32,26 @@ public class Score : MonoBehaviour
         GUI.skin = skin;
         GUI.Label(leftArea, leftScore.ToString());
         GUI.Label(rightArea, rightScore.ToString());
-
 	}
+
+    void LeftScoreUp()
+    {
+        leftScore++;
+    }
+
+    void RightScoreUp()
+    {
+        rightScore++;
+    }
+
+    /// <summary>
+    /// Quit application - Test
+    /// </summary>
+    void Update()
+    {
+        if (leftScore + rightScore > 20)
+        {
+            Application.Quit();
+        }
+    }
 }
