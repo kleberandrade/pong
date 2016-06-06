@@ -3,32 +3,20 @@ using System.Collections;
 
 public class Goal : MonoBehaviour 
 {
-    #region Events
-    public delegate void GoalEvent();
-    public static GoalEvent OnLeftGoal;
-    public static GoalEvent OnRightGoal;
-    #endregion
+    public PlayerType m_PlayerType;
+    private GameManager m_GameManager;
 
-    [SerializeField]
-    private PlayerType type;
-    [SerializeField]
-    private AudioClip audioGoal;
-
-	void OnTriggerEnter (Collider hit) 
+    private void Start()
     {
-        if (type == PlayerType.Left)
-        {
-            if (OnLeftGoal != null)
-                OnLeftGoal();
-        }
+        m_GameManager = FindObjectOfType<GameManager>();
+    }
 
-        if (type == PlayerType.Right)
-        {
-            if (OnRightGoal != null)
-                OnRightGoal();
-        }
+	private void OnTriggerEnter(Collider hit) 
+    {
+        if (m_PlayerType == PlayerType.Left)
+            m_GameManager.AddRightScore();
 
-        if (audioGoal)
-            AudioSource.PlayClipAtPoint(audioGoal, transform.position);
-	}
+        if (m_PlayerType == PlayerType.Right)
+            m_GameManager.AddLeftScore();
+    }
 }

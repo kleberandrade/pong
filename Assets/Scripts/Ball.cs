@@ -1,92 +1,51 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent (typeof(Rigidbody), typeof(TrailRenderer))]
+[RequireComponent (typeof(Rigidbody))]
 public class Ball : MonoBehaviour 
 {
-    [SerializeField]
-    private float speed = 3.0f;
-    [SerializeField]
-    private float trailTimer = 0.8f;
+    public float m_RespawnTime = 2.0f;
+    public float m_Speed = 3.0f;
+    private Vector3 m_Origin;
+    private Vector3 m_LeftImpulse = new Vector3(1.0f, 0.0f, 1.0f);
+    private Vector3 m_RightImpulse = new Vector3(-1.0f, 0.0f, -1.0f);
+    private Rigidbody m_Rigidbody;
+    private Transform m_Transform;
 
-    private Vector3 origin;
-    private Vector3 velocity;
-    private Vector3 leftImpulse = new Vector3(1.0f, 0.0f, 1.0f);
-    private Vector3 rightImpulse = new Vector3(-1.0f, 0.0f, -1.0f);
-
-    private TrailRenderer trail;
-
-    [SerializeField]
-    private bool ghostBall = false;
-
-    void Start()
+    private void Awake()
     {
-        origin = transform.position;
-
-        trail = GetComponent<TrailRenderer>();
-        trail.time = trailTimer;
-        trail.enabled = false;
+        m_Rigidbody = GetComponent<Rigidbody>();
+        m_Transform = GetComponent<Transform>();
     }
 
-    void StartImpulse(Vector3 side)
+    private void Start()
     {
-		trail.enabled = false;
-        rigidbody.velocity = Vector3.zero;
-        side.y = Random.Range(-1.0f, 1.0f) < 0.0f ? -1.0f : 1.0f;
-        transform.position = origin;
-        rigidbody.AddForce(side * speed, ForceMode.Impulse);
-        StartCoroutine("TrailEnable");
+        m_Origin = transform.position;
     }
 
-    IEnumerator TrailEnable()
+    private IEnumerator Impulsing(Vector3 direction)
     {
-        yield return new WaitForSeconds(trail.time);
-        trail.enabled = true;
+        m_Rigidbody.velocity = Vector3.zero;
+        m_Transform.position = m_Origin;
+        yield return new WaitForSeconds(m_RespawnTime);
+        direction.y = Random.Range(-1.0f, 1.0f) < 0.0f ? -1.0f : 1.0f;
+        m_Rigidbody.AddForce(direction * m_Speed, ForceMode.Impulse);
     }
 
-    void Initialize()
+    public void Initialize()
     {
         if (Random.Range(-1.0f, 1.0f) < 0.0f)
-            StartImpulse(leftImpulse);
+            StartCoroutine(Impulsing(m_LeftImpulse));
         else
-            StartImpulse(rightImpulse);
+            StartCoroutine(Impulsing(m_RightImpulse));
     }
 
-    void OnEnable()
+    public void Impulse(PlayerType type)
     {
-        Items.OnDarken += OnDarken;
-        Goal.OnLeftGoal += OnLeftGoal;
-        Goal.OnRightGoal += OnRightGoal;
-        GameManager.OnGameStart += Initialize;
-    }
+        if (type == PlayerType.Left)
+            StartCoroutine(Impulsing(m_LeftImpulse));
 
-    void OnDisable()
-    {
-        Items.OnDarken -= OnDarken;
-        Goal.OnLeftGoal -= OnLeftGoal;
-        Goal.OnRightGoal -= OnRightGoal;
-        GameManager.OnGameStart -= Initialize;
-    }
-
-    void OnDarken()
-    {
-        StartCoroutine("Darken");
-    }
-
-    IEnumerator Darken()
-    {
-        transform.GetChild(0).gameObject.SetActive(true);
-        yield return new WaitForSeconds(10.0f);
-        transform.GetChild(0).gameObject.SetActive(false);
-    }
-
-    void OnLeftGoal()
-    {
-        StartImpulse(leftImpulse);
-    }
-
-    void OnRightGoal()
-    {
-        StartImpulse(rightImpulse);
+        if (type == PlayerType.Right)
+            StartCoroutine(Impulsing(m_RightImpulse));
     }
 }
